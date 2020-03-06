@@ -23,7 +23,4 @@ Code is tested on simulator, iOS-13,
 Orientation Supported:
 Vertical and horizontal
 
-Git branches:
-Only master is used, no secondary develop branches used.
-
 
