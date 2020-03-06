@@ -15,48 +15,54 @@ class TrieTests: XCTestCase {
     var sut: Trie!
     
     override func setUp() {
-       sut = Trie()
+        /*
+         1. Setup of data store happens in AppDelagate for the purpose of this assignment.
+         2. For better results data store should mocked instead of using actual json.
+         3. Different app delegate can be written for test target to make tests better and faster.
+         */
+        sut = CityNamesDataStore.shared.getCityNamesTrie()
     }
     
     override func tearDown() {
-        sut = nil
     }
     
     func testTrie() {
         // datastore should be mocked instead of using actual singleton,
-        CityNamesDataStore.shared.setupCityLocalStorage()
-        let trie = CityNamesDataStore.shared.getCityNamesTrie()
-        var characterArray:[Character] = []
-        let array = trie.query(searchString: "ala")
+        
+        let array = sut!.query(searchString: "ala")
         XCTAssertTrue(array?.count == 149)
     }
     func testTrieSet1(){
-        let trie = CityNamesDataStore.shared.getCityNamesTrie()
-        let nameArray = trie.query(searchString: "ala")
+        
+        let nameArray = sut.query(searchString: "ala")
         XCTAssertTrue(nameArray!.contains("alabama"))
         XCTAssertTrue(nameArray!.contains("alac"))
     }
-
+    
     func testWhenStringsContainCapitalLetters() {
-//        sut.insert("Alabama")
-//        sut.insert("alabamamana")
-        let trie = CityNamesDataStore.shared.getCityNamesTrie()
-        let nameArray = trie.query(searchString:"Ala")
+        
+        
+        let nameArray = sut.query(searchString:"Ala")
         XCTAssertTrue(nameArray!.contains("alabama"))
         XCTAssertTrue(nameArray!.contains("alacam"))
     }
-
+    
     func testWhenSavedStringsAreDistinctThanSearchStringNoValueIsReturned() {
-        let trie = CityNamesDataStore.shared.getCityNamesTrie()
-        let nameArray = trie.query(searchString:"123")
+        let nameArray = sut.query(searchString:"123")
         XCTAssertTrue(nameArray!.count == 0)
     }
-
+    
     func testWhenPrefixStringIsSubstringOfCompleteWordOnTraversalPathThenCompleteWordIsNotReturned() {
-        let trie = CityNamesDataStore.shared.getCityNamesTrie()
-        let nameArray = trie.query(searchString:"alabama")
+        let nameArray = sut.query(searchString:"alabama")
         XCTAssertEqual(nameArray![0], "alabama")
         XCTAssertTrue(nameArray!.count == 1)
     }
-
+    
+    func testValuesAreSortedIncreasingly() {
+        let array = sut.query(searchString: "alaba")
+        XCTAssertEqual(array?.count, 4)
+        XCTAssertEqual(array?[0], "alabama")
+        XCTAssertEqual(array?[3], "alabat")
+    }
+    
 }
