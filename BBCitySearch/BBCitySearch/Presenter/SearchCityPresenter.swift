@@ -14,7 +14,6 @@ protocol SearchCityPresentable {
 
 class SearchCityPresenter: SearchCityPresentable {
     
-    var operationsArray:[Operation] = []
     lazy var filterQueue: OperationQueue = {
         var queue = OperationQueue()
         
@@ -37,7 +36,6 @@ class SearchCityPresenter: SearchCityPresentable {
         
         filterQueue.cancelAllOperations()
         operation.addExecutionBlock {
-            print("operation for \(searchString)")
             let cities = cityNamesTrie.query(searchString: searchString)
             DispatchQueue.main.async {
                 completionBlock(true,cities as Any)

@@ -18,10 +18,8 @@ class SearchCityViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        presenter = SearchCityPresenter.init()
+        presenter = SearchCityPresenter()
         title = "Search your City"
-        
-        // Do any additional setup after loading the view.
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -29,10 +27,9 @@ class SearchCityViewController: UIViewController {
         tableView.dataSource = self
         searchBar.delegate = self
     }
-    
 }
 
-extension SearchCityViewController:UITableViewDelegate,UITableViewDataSource{
+extension SearchCityViewController:UITableViewDelegate,UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return cities.count
     }
@@ -48,19 +45,15 @@ extension SearchCityViewController:UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         if let mapView = storyBoard.instantiateViewController(withIdentifier: "MapViewController") as? MapViewController{
-           
             mapView.setupMapView(cityName: cities[indexPath.row])
-           // mapView.city = tableView.cellForRow(at: indexPath)
             self.navigationController?.pushViewController(mapView, animated: true)
         }
-        
     }
 }
 
 extension SearchCityViewController: UISearchBarDelegate{
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if (searchText.count > 0){
-            
             presenter?.getCitiesWithPrefix(searchString:searchText, completionBlock: { [weak self] status,data in
                 if let cityArray  = data as? [String]{
                     self?.cities = cityArray
